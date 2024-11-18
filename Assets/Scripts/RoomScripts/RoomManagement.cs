@@ -252,6 +252,9 @@ public class RoomManagement : MonoBehaviour
                         }
                     }
 
+                    // Enable doors incase all enemies are already killed
+                    ActivateDoors();
+
                     // set new room as the current room (updates current room code)
                     currentRoom = nextRoom;
                 }
@@ -289,11 +292,13 @@ public class RoomManagement : MonoBehaviour
         var objectsDefault = GameObject.FindGameObjectsWithTag("Default");
         var objectsEnemies = GameObject.FindGameObjectsWithTag("Enemy");
         var objectsBullets = GameObject.FindGameObjectsWithTag("Bullet");
+        var objectsDoors = GameObject.FindGameObjectsWithTag("Door");
         //List<GameObject> objectsList = new List<GameObject>();
 
         DestroyObjectsList(objectsDefault);
         DestroyObjectsList(objectsEnemies);
         DestroyObjectsList(objectsBullets);
+        DestroyObjectsList(objectsDoors);
 
     }
 
@@ -305,5 +310,46 @@ public class RoomManagement : MonoBehaviour
             //Debug.Log("Destroying: " + objects[i].name);
             Destroy(objects[i]);
         }
+    }
+
+    public void UpdateEnemyOnDeath(string enemyName)
+    {
+        for (int i=0; i < currentRoom.enemies.Count; i++)
+        {
+            if (currentRoom.enemies[i].enemyCode == enemyName)
+            {
+                currentRoom.enemies[i].isAlive = false;
+            }
+        }
+        ActivateDoors();
+    }
+
+    private void ActivateDoors()
+    {
+        if (LastEnemyCheck())
+        {
+
+            Debug.Log("Last enemy check result: True");
+            var objectsDoors = GameObject.FindGameObjectsWithTag("Door");
+            for (int i = 0; i < objectsDoors.Length; i++)
+            {
+                Debug.Log("Activating door: " + objectsDoors[i].name);
+                objectsDoors[i].GetComponent<DoorScript>().ActivateDoor();
+            }
+        }
+    }
+
+    private bool LastEnemyCheck()
+    {
+        bool allEnemiesDead = true;
+        for (int i = 0; i < currentRoom.enemies.Count; i++)
+        {
+            if (currentRoom.enemies[i].isAlive == true)
+            {
+                return false;
+            }
+        }
+
+        return allEnemiesDead;
     }
 }

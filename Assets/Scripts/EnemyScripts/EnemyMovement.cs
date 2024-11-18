@@ -242,6 +242,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void EnemyKilled()
     {
+        GameObject.Find("RoomManager").GetComponent<RoomManagement>().UpdateEnemyOnDeath(gameObject.name);
         Destroy(gameObject);
     }
 }

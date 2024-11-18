@@ -6,6 +6,8 @@ public class DoorScript : MonoBehaviour
 {
     public string doorRoomCode;
     public string doorPOS;
+    public SpriteRenderer sr;
+    public BoxCollider2D bc;
     private GameObject RM;
     private GameObject Player;
     // Start is called before the first frame update
@@ -25,6 +27,12 @@ public class DoorScript : MonoBehaviour
     {
         doorRoomCode = doorCode;
         doorPOS = POS;
+    }
+
+    public void ActivateDoor()
+    {
+        sr.enabled = true;
+        bc.enabled = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

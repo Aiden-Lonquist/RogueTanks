@@ -25,19 +25,25 @@ public class EnemyAttack : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        // TODO add conditional handling to not fire if the player is obstructed by a wall
+        // wait a random amount of time before firing first shot to give player the chance to move 
+        yield return new WaitForSeconds(Random.Range(0.5f, 2f));
 
-        while(true)
+        while (true)
         {
-            yield return new WaitForSeconds(fireDelay);
             // fire raycast
             //Debug.DrawRay(transform.position, transform.up, Color.green, 2.5f);
             RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, 30);
             //Debug.Log("enemy aiming at: " + hit.transform.tag);
+            // if player is in sight then a shot will fire
             if (hit.transform.CompareTag("Player")) {
                 GameObject b = Instantiate(bullet, transform.position + (transform.up * 0.5f), transform.rotation);
                 b.GetComponent<BulletScript>().MakeEnemyBullet();
                 b.GetComponent<BulletScript>().UpdateValues(damage, bulletSpeed, bulletSize);
+                yield return new WaitForSeconds(fireDelay);
+            } else
+            {
+                // if fails to fire delay until next attack is shorter
+                yield return new WaitForSeconds(fireDelay/2f);
             }
         }
     }
