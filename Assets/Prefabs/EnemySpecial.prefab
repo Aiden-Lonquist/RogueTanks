@@ -103,6 +103,15 @@ MonoBehaviour:
   maxHealth: 5
   speed: 1.5
   rb: {fileID: 1595954078587651085}
+  cleanSpawn: 0
+  tankTrack: {fileID: 2395971572885896235, guid: 7f6bfca1d695de44a95a84273ce6cdfd, type: 3}
+  powerUps:
+  - {fileID: 5078683361460254709, guid: dffe6d556b3a8d34f9646749f8c2825a, type: 3}
+  - {fileID: 3766038968451697964, guid: 63c6f86ac60e510449a1971fafebff77, type: 3}
+  - {fileID: 4280057303902172512, guid: a3f68db54354cdd4b81160d0399675a7, type: 3}
+  - {fileID: 5070647446842844651, guid: 6dc5020d28e856a40a001fba0e1c8cb1, type: 3}
+  - {fileID: 5077897520904257117, guid: 048756207b719c444b65069f92ddf390, type: 3}
+  - {fileID: 5224942063289262237, guid: 95bf2f7b831621f418585cbb8794107b, type: 3}
 --- !u!50 &1595954078587651085
 Rigidbody2D:
   serializedVersion: 4

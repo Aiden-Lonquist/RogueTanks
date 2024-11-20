@@ -12,6 +12,7 @@ public class RoomManagement : MonoBehaviour
     public GameObject door;
     public GameObject defaultRoomTemplate;
     public List<GameObject> enemyTypes;
+    public List<GameObject> obstacleTypes;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,12 +51,13 @@ public class RoomManagement : MonoBehaviour
         {
             // itterate through current room enemies and update their health and position
             UpdateEnemyValues();
+            UpdateObstacleValues();
 
             // generate a new room
             List<int> availableDoors = new List<int> {1, 2, 3, 4};
             List<int> doorsToPlace = new List<int>();
             int AmountDoorsToPlace = Random.Range(1, 4);
-            int obstacleCount = Random.Range(0, 6);
+            int obstacleCount = Random.Range(4, 20);
             int enemyCount = Random.Range(1, 5);
 
             Room newRoom = new()
@@ -69,6 +71,16 @@ public class RoomManagement : MonoBehaviour
                 door3 = "inactive",
                 door4 = "inactive"
             };
+
+            //Debug.Log("NEW ROOM NAME" + newRoom.roomType.name);
+            //Debug.Log("NEW ROOM TEMPLATE NUMBER" + newRoom.roomType.GetComponent<RoomTemplateData>().roomTemplateNumber);
+
+            List<Vector2> availablePlacements = newRoom.roomType.GetComponent<RoomTemplateData>().GetAvailablePlacements(newRoom.roomType.GetComponent<RoomTemplateData>().roomTemplateNumber);
+            //Debug.Log("Available placements count: " + availablePlacements.Count + " after get");
+            //int[][] arrayAvailablePlacements = [[0,0], [1,1]];
+
+            // Get an array of all available positions that are not blocked by default walls. (hard coded)
+            // as enemies and obstacles are placed, remove the used locations from the array so that nothing overlaps.
 
             // assigning old roon code to corrisponding door
             switch (doorPOS) { 
@@ -132,11 +144,27 @@ public class RoomManagement : MonoBehaviour
                 Enemy enemy = new();
                 enemy.enemyCode = "Enemy" + newEnemy.ToString();
                 enemy.enemyType = enemyTypes[Random.Range(0, enemyTypes.Count)];
-                enemy.xPOS = Random.Range(-7f, 7f);
-                enemy.yPOS = Random.Range(-3f, 3f);
+                int availablePlacementIndex = Random.Range(0, availablePlacements.Count);
+                enemy.xPOS = availablePlacements[availablePlacementIndex].x;
+                enemy.yPOS = availablePlacements[availablePlacementIndex].y;
                 enemy.isAlive = true;
 
                 newRoom.enemies.Add(enemy);
+                availablePlacements.RemoveAt(availablePlacementIndex);
+            }
+
+            for (int newObstacle = 0; newObstacle < obstacleCount; newObstacle++)
+            {
+                Obstacle obstacle = new();
+                obstacle.obstacleID = "Obstacle" + newObstacle.ToString();
+                obstacle.obstacleType = obstacleTypes[Random.Range(0, obstacleTypes.Count)];
+                int availablePlacementIndex = Random.Range(0, availablePlacements.Count);
+                obstacle.xPOS = availablePlacements[availablePlacementIndex].x;
+                obstacle.yPOS = availablePlacements[availablePlacementIndex].y;
+                obstacle.isActive = true;
+
+                newRoom.obstacles.Add(obstacle);
+                availablePlacements.RemoveAt(availablePlacementIndex);
             }
             // TODO RANDOMLY POPULATE ENEMY AND OBSTACLE LIST!
 
@@ -154,29 +182,35 @@ public class RoomManagement : MonoBehaviour
             // place the doors for the room
             if (newRoom.door1 != "inactive")
             {
-                GameObject newDoor1 = Instantiate(door, new Vector3(0, 5, 0), new Quaternion(0, 0, 0, 0));
+                GameObject newDoor1 = Instantiate(door, new Vector3(0, 5, -6), new Quaternion(0, 0, 0, 0));
                 newDoor1.GetComponent<DoorScript>().SetValues(newRoom.door1, "north");
             }
             if (newRoom.door2 != "inactive")
             {
-                GameObject newDoor2 = Instantiate(door, new Vector3(9, 0, 0), new Quaternion(0, 0, 0.707f, 0.707f));
+                GameObject newDoor2 = Instantiate(door, new Vector3(9, 0, -6), new Quaternion(0, 0, 0.707f, 0.707f));
                 newDoor2.GetComponent<DoorScript>().SetValues(newRoom.door2, "east");
             }
             if (newRoom.door3 != "inactive")
             {
-                GameObject newDoor3 = Instantiate(door, new Vector3(0, -5, 0), new Quaternion(0, 0, 0, 0));
+                GameObject newDoor3 = Instantiate(door, new Vector3(0, -5, -6), new Quaternion(0, 0, 0, 0));
                 newDoor3.GetComponent<DoorScript>().SetValues(newRoom.door3, "south");
             }
             if (newRoom.door4 != "inactive")
             {
-                GameObject newDoor4 = Instantiate(door, new Vector3(-9, 0, 0), new Quaternion(0, 0, 0.707f, 0.707f));
+                GameObject newDoor4 = Instantiate(door, new Vector3(-9, 0, -6), new Quaternion(0, 0, 0.707f, 0.707f));
                 newDoor4.GetComponent<DoorScript>().SetValues(newRoom.door4, "west");
             }
 
             // place the obstacles
             for (int obs = 0; obs < newRoom.obstacles.Count; obs++)
-            {
-                Instantiate(newRoom.obstacles[obs].obstacleType, new Vector3(newRoom.obstacles[obs].xPOS, newRoom.obstacles[obs].yPOS, 0), transform.rotation);
+            {   
+                if (newRoom.obstacles[obs].isActive)
+                {
+                    GameObject newObstacle = Instantiate(newRoom.obstacles[obs].obstacleType, new Vector3(newRoom.obstacles[obs].xPOS, newRoom.obstacles[obs].yPOS, 0), transform.rotation);
+                    newRoom.obstacles[obs].maxHealth = newObstacle.GetComponent<ObstacleScript>().maxHealth;
+                    newObstacle.GetComponent<ObstacleScript>().SetCurrentHealth(newRoom.obstacles[obs].maxHealth);
+                    newObstacle.name = newRoom.obstacles[obs].obstacleID;
+                }
             }
 
             // place the enemies
@@ -201,6 +235,7 @@ public class RoomManagement : MonoBehaviour
         {
             // itterate through current room enemies and update their health and position
             UpdateEnemyValues();
+            UpdateObstacleValues();
 
             // restart the scene so it is empty
             // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -218,28 +253,33 @@ public class RoomManagement : MonoBehaviour
                     // place the doors for the room
                     if (nextRoom.door1 != "inactive")
                     {
-                        GameObject newDoor1 = Instantiate(door, new Vector3(0, 5, 0), new Quaternion(0, 0, 0, 0));
+                        GameObject newDoor1 = Instantiate(door, new Vector3(0, 5, -6), new Quaternion(0, 0, 0, 0));
                         newDoor1.GetComponent<DoorScript>().SetValues(nextRoom.door1, "north");
                     }
                     if (nextRoom.door2 != "inactive")
                     {
-                        GameObject newDoor2 = Instantiate(door, new Vector3(9, 0, 0), new Quaternion(0, 0, 0.707f, 0.707f));
+                        GameObject newDoor2 = Instantiate(door, new Vector3(9, 0, -6), new Quaternion(0, 0, 0.707f, 0.707f));
                         newDoor2.GetComponent<DoorScript>().SetValues(nextRoom.door2, "east");
                     }
                     if (nextRoom.door3 != "inactive")
                     {
-                        GameObject newDoor3 = Instantiate(door, new Vector3(0, -5, 0), new Quaternion(0, 0, 0, 0));
+                        GameObject newDoor3 = Instantiate(door, new Vector3(0, -5, -6), new Quaternion(0, 0, 0, 0));
                         newDoor3.GetComponent<DoorScript>().SetValues(nextRoom.door3, "south");
                     }
                     if (nextRoom.door4 != "inactive")
                     {
-                        GameObject newDoor4 = Instantiate(door, new Vector3(-9, 0, 0), new Quaternion(0, 0, 0.707f, 0.707f));
+                        GameObject newDoor4 = Instantiate(door, new Vector3(-9, 0, -6), new Quaternion(0, 0, 0.707f, 0.707f));
                         newDoor4.GetComponent<DoorScript>().SetValues(nextRoom.door4, "west");
                     }
 
                     for (int obs = 0; obs < nextRoom.obstacles.Count; obs++)
                     {
-                        Instantiate(nextRoom.obstacles[obs].obstacleType, new Vector3(nextRoom.obstacles[obs].xPOS, nextRoom.obstacles[obs].yPOS, 0), transform.rotation);
+                        if (nextRoom.obstacles[obs].isActive)
+                        {
+                            GameObject newObstacle = Instantiate(nextRoom.obstacles[obs].obstacleType, new Vector3(nextRoom.obstacles[obs].xPOS, nextRoom.obstacles[obs].yPOS, 0), transform.rotation);
+                            newObstacle.GetComponent<ObstacleScript>().SetCurrentHealth(nextRoom.obstacles[obs].curHealth);
+                            newObstacle.name = nextRoom.obstacles[obs].obstacleID;
+                        }
                     }
                     for (int enm = 0; enm < nextRoom.enemies.Count; enm++)
                     {
@@ -284,7 +324,26 @@ public class RoomManagement : MonoBehaviour
         }
     }
 
-    
+    private void UpdateObstacleValues()
+    {
+        for (int obs = 0; obs < currentRoom.obstacles.Count; obs++)
+        {
+            if (currentRoom.obstacles[obs].isActive)
+            {
+                GameObject obstacle = GameObject.Find(currentRoom.obstacles[obs].obstacleID);
+                if (obstacle != null)
+                {
+                    currentRoom.obstacles[obs].curHealth = obstacle.GetComponent<ObstacleScript>().GetCurrentHealth();
+                } else
+                {
+                    currentRoom.obstacles[obs].isActive = false;
+                }
+
+            }
+        }
+    }
+
+
     private void ResestRoom()
     {
         //var objects = GameObject.FindGameObjectsWithTag("Default");
@@ -293,12 +352,16 @@ public class RoomManagement : MonoBehaviour
         var objectsEnemies = GameObject.FindGameObjectsWithTag("Enemy");
         var objectsBullets = GameObject.FindGameObjectsWithTag("Bullet");
         var objectsDoors = GameObject.FindGameObjectsWithTag("Door");
+        var objectsPowerUps = GameObject.FindGameObjectsWithTag("PowerUp");
+        var objectsObstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         //List<GameObject> objectsList = new List<GameObject>();
 
         DestroyObjectsList(objectsDefault);
         DestroyObjectsList(objectsEnemies);
         DestroyObjectsList(objectsBullets);
         DestroyObjectsList(objectsDoors);
+        DestroyObjectsList(objectsPowerUps);
+        DestroyObjectsList(objectsObstacles);
 
     }
 
@@ -329,11 +392,11 @@ public class RoomManagement : MonoBehaviour
         if (LastEnemyCheck())
         {
 
-            Debug.Log("Last enemy check result: True");
+            //Debug.Log("Last enemy check result: True");
             var objectsDoors = GameObject.FindGameObjectsWithTag("Door");
             for (int i = 0; i < objectsDoors.Length; i++)
             {
-                Debug.Log("Activating door: " + objectsDoors[i].name);
+                //Debug.Log("Activating door: " + objectsDoors[i].name);
                 objectsDoors[i].GetComponent<DoorScript>().ActivateDoor();
             }
         }

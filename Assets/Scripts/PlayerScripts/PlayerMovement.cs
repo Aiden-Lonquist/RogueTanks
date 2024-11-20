@@ -5,13 +5,18 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
-    public int speed;
+    public float speed;
     public float health;
+
+    public GameObject tankTrack;
+    private GameObject tracks;
     private bool dashActive = false;
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(gameObject);
+        tracks = GameObject.Find("tracks");
+        StartCoroutine(PlaceTankTracks());
     }
 
     // Update is called once per frame
@@ -48,16 +53,16 @@ public class PlayerMovement : MonoBehaviour
         switch(doorPOS)
         {
             case "north":
-                gameObject.transform.position = new Vector3(0, -3f, 0);
+                gameObject.transform.position = new Vector3(0, -4f, 0);
                 break;
             case "east":
-                gameObject.transform.position = new Vector3(-7f, 0, 0);
+                gameObject.transform.position = new Vector3(-8f, 0, 0);
                 break;
             case "south":
-                gameObject.transform.position = new Vector3(0, 3f, 0);
+                gameObject.transform.position = new Vector3(0, 4f, 0);
                 break;
             case "west":
-                gameObject.transform.position = new Vector3(7f, 0, 0);
+                gameObject.transform.position = new Vector3(8f, 0, 0);
                 break;
             default:
                 Debug.LogError("DEFAULT REACHED WHEN MOVING PLAYER AFTER DOOR");
@@ -69,5 +74,18 @@ public class PlayerMovement : MonoBehaviour
     {
         health -= dmg;
         // TODO: add death handling
+    }
+
+    private IEnumerator PlaceTankTracks()
+    {
+        while (true)
+        {
+            if (rb.velocity.x != 0 || rb.velocity.y != 0)
+            {
+                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0, 0, 1), gameObject.transform.rotation, tracks.transform);
+            }
+            yield return new WaitForSeconds(0.3f / speed);
+
+        }
     }
 }

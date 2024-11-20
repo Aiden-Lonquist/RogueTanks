@@ -61,6 +61,10 @@ public class BulletScript : MonoBehaviour
                     // player's bullet hits an enemy
                     collision.transform.GetComponent<EnemyMovement>().TakeDamage(damage);
                     Destroy(gameObject);
+                } else if (collision.transform.CompareTag("Obstacle"))
+                {
+                    collision.transform.GetComponent<ObstacleScript>().TakeDamage(damage);
+                    Destroy(gameObject);
                 }
             }
         } else
@@ -71,6 +75,9 @@ public class BulletScript : MonoBehaviour
                 {
                     // enemy's bullet hits player
                     collision.transform.GetComponent<PlayerMovement>().TakeDamage(damage);
+                    Destroy(gameObject);
+                } else if (collision.transform.CompareTag("Obstacle"))
+                {
                     Destroy(gameObject);
                 }
             }

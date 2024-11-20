@@ -52,6 +52,9 @@ ExportedObj/
 *.pdb.meta
 *.mdb.meta
 
+# Visual Studio config file
+.vsconfig
+
 # Unity3D generated file on crash reports
 sysinfo.txt
 

@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Wall
   - Door
+  - PowerUp
+  - Obstacle
   layers:
   - Default
   - TransparentFX

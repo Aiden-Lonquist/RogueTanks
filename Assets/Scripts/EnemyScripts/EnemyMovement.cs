@@ -15,11 +15,16 @@ public class EnemyMovement : MonoBehaviour
     private float timeToMove;
     private bool isMoving = false;
     public bool cleanSpawn = false;
+    public GameObject tankTrack;
+    private GameObject tracks;
+    public List<GameObject> powerUps;
 
     // Start is called before the first frame update
     void Start()
     {
         cleanSpawn = PreventWallSpawn();
+        tracks = GameObject.Find("tracks");
+        StartCoroutine(PlaceTankTracks());
         Movement();
     }
 
@@ -185,7 +190,7 @@ public class EnemyMovement : MonoBehaviour
         if (Physics2D.OverlapCollider(coll, filter, results) > 0)
         {
             transform.position = new Vector3(Random.Range(-7f, 7f), Random.Range(-3f, 3f), transform.position.z);
-            Debug.Log("Moving " + gameObject.name + " to" + transform.position + " due to wall spawn.");
+            //Debug.Log("Moving " + gameObject.name + " to" + transform.position + " due to wall spawn.");
         } else
         {
             return true;
@@ -225,6 +230,19 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    private IEnumerator PlaceTankTracks()
+    {
+        while (true)
+        {
+            if (rb.velocity.x != 0 || rb.velocity.y != 0)
+            {
+                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0,0,1), gameObject.transform.rotation * Quaternion.Euler(0, 0, -90), tracks.transform);
+            }
+            yield return new WaitForSeconds(0.3f / speed);
+
+        }
+    }
+
     public void SetCurrentHealth(float h)
     {
         curHealth = h;
@@ -242,7 +260,14 @@ public class EnemyMovement : MonoBehaviour
 
     private void EnemyKilled()
     {
+        // tell the room manager that an enemy has been killed
         GameObject.Find("RoomManager").GetComponent<RoomManagement>().UpdateEnemyOnDeath(gameObject.name);
+        float powerUpSeed = Random.Range(0f, 1f);
+        if (powerUpSeed < 0.5)
+        {
+            //Debug.Log("Spawning power up");
+            Instantiate(powerUps[Random.Range(0, powerUps.Count)], gameObject.transform.position, gameObject.transform.rotation);
+        }
         Destroy(gameObject);
     }
 }
