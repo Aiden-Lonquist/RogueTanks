@@ -22,7 +22,8 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cleanSpawn = PreventWallSpawn();
+        //cleanSpawn = PreventWallSpawn();
+        cleanSpawn = true;
         tracks = GameObject.Find("tracks");
         StartCoroutine(PlaceTankTracks());
         Movement();
@@ -166,7 +167,7 @@ public class EnemyMovement : MonoBehaviour
             depth++;
         }
 
-        Debug.LogError("Suitable distance was not found");
+        //Debug.LogError("Suitable distance was not found");
         return 0;
 
     }
@@ -189,11 +190,13 @@ public class EnemyMovement : MonoBehaviour
         List<Collider2D> results = new List<Collider2D>();
         if (Physics2D.OverlapCollider(coll, filter, results) > 0)
         {
+            Debug.LogError("MOVING ENEMY ON BAD SPAWN! Attempted Spawn at: " + transform.position);
+            return true;
             transform.position = new Vector3(Random.Range(-7f, 7f), Random.Range(-3f, 3f), transform.position.z);
             //Debug.Log("Moving " + gameObject.name + " to" + transform.position + " due to wall spawn.");
         } else
         {
-            return true;
+
         }
         return false;
         
@@ -202,7 +205,7 @@ public class EnemyMovement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //Debug.Log("Collided with: " + collision.transform.tag);
-        if (collision.transform.CompareTag("Wall"))
+        if (collision.transform.CompareTag("Wall") || collision.transform.CompareTag("Obstacle"))
         {
             timeToMove = 0;
             rb.velocity = new Vector2(0, 0); ;
@@ -212,7 +215,7 @@ public class EnemyMovement : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("trigger entered with: " + collision.transform.tag);
-        if (collision.transform.CompareTag("Wall"))
+        if (collision.transform.CompareTag("Wall") || collision.transform.CompareTag("Obstacle"))
         {
             timeToMove = 0;
             rb.velocity = new Vector2(0, 0);

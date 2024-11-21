@@ -57,8 +57,8 @@ public class RoomManagement : MonoBehaviour
             List<int> availableDoors = new List<int> {1, 2, 3, 4};
             List<int> doorsToPlace = new List<int>();
             int AmountDoorsToPlace = Random.Range(1, 4);
-            int obstacleCount = Random.Range(4, 20);
-            int enemyCount = Random.Range(1, 5);
+            int obstacleCount = Random.Range(20, 50);
+            int enemyCount = Random.Range(10, 21);
 
             Room newRoom = new()
             {
