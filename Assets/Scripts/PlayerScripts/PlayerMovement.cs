@@ -53,16 +53,16 @@ public class PlayerMovement : MonoBehaviour
         switch(doorPOS)
         {
             case "north":
-                gameObject.transform.position = new Vector3(0, -4f, 0);
+                gameObject.transform.position = new Vector3(0, -4f, -2);
                 break;
             case "east":
-                gameObject.transform.position = new Vector3(-8f, 0, 0);
+                gameObject.transform.position = new Vector3(-8f, 0, -2);
                 break;
             case "south":
-                gameObject.transform.position = new Vector3(0, 4f, 0);
+                gameObject.transform.position = new Vector3(0, 4f, -2);
                 break;
             case "west":
-                gameObject.transform.position = new Vector3(8f, 0, 0);
+                gameObject.transform.position = new Vector3(8f, 0, -2);
                 break;
             default:
                 Debug.LogError("DEFAULT REACHED WHEN MOVING PLAYER AFTER DOOR");
@@ -82,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rb.velocity.x != 0 || rb.velocity.y != 0)
             {
-                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0, 0, 1), gameObject.transform.rotation, tracks.transform);
+                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0, 0, 3), gameObject.transform.rotation, tracks.transform);
             }
             yield return new WaitForSeconds(0.3f / speed);
 

@@ -13,10 +13,14 @@ public class RoomManagement : MonoBehaviour
     public GameObject defaultRoomTemplate;
     public List<GameObject> enemyTypes;
     public List<GameObject> obstacleTypes;
+    private GameObject obstacleHolder, enemyHolder;
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(gameObject);
+        obstacleHolder = GameObject.Find("obstacles");
+        enemyHolder = GameObject.Find("enemies");
+
         Room defaultRoom = new()
         {
             door1 = "-1",
@@ -206,7 +210,7 @@ public class RoomManagement : MonoBehaviour
             {   
                 if (newRoom.obstacles[obs].isActive)
                 {
-                    GameObject newObstacle = Instantiate(newRoom.obstacles[obs].obstacleType, new Vector3(newRoom.obstacles[obs].xPOS, newRoom.obstacles[obs].yPOS, 0), transform.rotation);
+                    GameObject newObstacle = Instantiate(newRoom.obstacles[obs].obstacleType, new Vector3(newRoom.obstacles[obs].xPOS, newRoom.obstacles[obs].yPOS, 0), transform.rotation, obstacleHolder.transform);
                     newRoom.obstacles[obs].maxHealth = newObstacle.GetComponent<ObstacleScript>().maxHealth;
                     newObstacle.GetComponent<ObstacleScript>().SetCurrentHealth(newRoom.obstacles[obs].maxHealth);
                     newObstacle.name = newRoom.obstacles[obs].obstacleID;
@@ -218,7 +222,7 @@ public class RoomManagement : MonoBehaviour
             {
                 if (newRoom.enemies[enm].isAlive)
                 {
-                    GameObject newEnemy = Instantiate(newRoom.enemies[enm].enemyType, new Vector3(newRoom.enemies[enm].xPOS, newRoom.enemies[enm].yPOS, 0), transform.rotation);
+                    GameObject newEnemy = Instantiate(newRoom.enemies[enm].enemyType, new Vector3(newRoom.enemies[enm].xPOS, newRoom.enemies[enm].yPOS, 0), transform.rotation, enemyHolder.transform);
                     newRoom.enemies[enm].maxHealth = newEnemy.GetComponent<EnemyMovement>().maxHealth;
                     newEnemy.GetComponent<EnemyMovement>().SetCurrentHealth(newRoom.enemies[enm].maxHealth);
                     newEnemy.name = newRoom.enemies[enm].enemyCode;
@@ -276,7 +280,7 @@ public class RoomManagement : MonoBehaviour
                     {
                         if (nextRoom.obstacles[obs].isActive)
                         {
-                            GameObject newObstacle = Instantiate(nextRoom.obstacles[obs].obstacleType, new Vector3(nextRoom.obstacles[obs].xPOS, nextRoom.obstacles[obs].yPOS, 0), transform.rotation);
+                            GameObject newObstacle = Instantiate(nextRoom.obstacles[obs].obstacleType, new Vector3(nextRoom.obstacles[obs].xPOS, nextRoom.obstacles[obs].yPOS, 0), transform.rotation, obstacleHolder.transform);
                             newObstacle.GetComponent<ObstacleScript>().SetCurrentHealth(nextRoom.obstacles[obs].curHealth);
                             newObstacle.name = nextRoom.obstacles[obs].obstacleID;
                         }
@@ -285,7 +289,7 @@ public class RoomManagement : MonoBehaviour
                     {
                         if (nextRoom.enemies[enm].isAlive)
                         {
-                            GameObject newEnemy = Instantiate(nextRoom.enemies[enm].enemyType, new Vector3(nextRoom.enemies[enm].xPOS, nextRoom.enemies[enm].yPOS, 0), transform.rotation);
+                            GameObject newEnemy = Instantiate(nextRoom.enemies[enm].enemyType, new Vector3(nextRoom.enemies[enm].xPOS, nextRoom.enemies[enm].yPOS, 0), transform.rotation, enemyHolder.transform);
                             Debug.Log("setting enemy " + nextRoom.enemies[enm].enemyCode + "'s to: " + nextRoom.enemies[enm].curHealth);
                             newEnemy.GetComponent<EnemyMovement>().SetCurrentHealth(nextRoom.enemies[enm].curHealth);
                             newEnemy.name = nextRoom.enemies[enm].enemyCode;

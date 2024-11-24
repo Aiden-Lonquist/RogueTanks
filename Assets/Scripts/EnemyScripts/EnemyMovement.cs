@@ -239,7 +239,7 @@ public class EnemyMovement : MonoBehaviour
         {
             if (rb.velocity.x != 0 || rb.velocity.y != 0)
             {
-                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0,0,1), gameObject.transform.rotation * Quaternion.Euler(0, 0, -90), tracks.transform);
+                Instantiate(tankTrack, gameObject.transform.position + new Vector3(0,0,3), gameObject.transform.rotation * Quaternion.Euler(0, 0, -90), tracks.transform);
             }
             yield return new WaitForSeconds(0.3f / speed);
 
