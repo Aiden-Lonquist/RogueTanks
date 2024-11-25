@@ -123,6 +123,21 @@ MonoBehaviour:
   treadImage: {fileID: 2094405456411326997}
   bodyImage: {fileID: 472446999484334487}
   gunImage: {fileID: 2112656195617787250}
+  currentTread: {fileID: 0}
+  currentBody: {fileID: 0}
+  currentGun: {fileID: 0}
+  powerUps:
+  - {fileID: 5096469155562650743, guid: b9f702bb65c197745ba054bcd1cccaa6, type: 3}
+  - {fileID: 7222549835558143666, guid: 48c3f72172c465e4fac20ee302ea793e, type: 3}
+  - {fileID: 8106894128149892016, guid: 64e791e90d98d44498cd292a310e0fde, type: 3}
+  - {fileID: 4858039309675495381, guid: 8857ef46f3d38c94ebeef0b067cfdfa0, type: 3}
+  - {fileID: 8328059042918459579, guid: ee32dfecdc385a94ab3da9ca64b9f002, type: 3}
+  - {fileID: 582927225301870224, guid: 262f99b4b51213f4dac72874d0398d98, type: 3}
+  - {fileID: 5749282216327841702, guid: f4d8ac0cdbe33d14fbf313b61c298a25, type: 3}
+  - {fileID: 5859584013601113252, guid: 3b662db4e51a9834cbf7d7dcc04b1be8, type: 3}
+  - {fileID: 8187065220027764485, guid: 09e95f278ce80a34a9ffb216506f473b, type: 3}
+  - {fileID: 5434150274338920989, guid: 9ad057a18db6d1c4d80b08bf15000d79, type: 3}
+  - {fileID: 5577438231271007927, guid: b05220c995e7558429f338e7070282fd, type: 3}
 --- !u!50 &3843613333356288871
 Rigidbody2D:
   serializedVersion: 4

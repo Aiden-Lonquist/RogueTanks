@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1595954078587651085}
   - component: {fileID: 1595954078587651084}
   m_Layer: 2
-  m_Name: EnemyStationary
+  m_Name: EnemyBasic2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3f0e0184f5eb4594586fac8ddde9e0e9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6c99b034b7a195142a46c0605f8d89b4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 1
-  speed: 0
+  speed: 1
   rb: {fileID: 1595954078587651085}
   cleanSpawn: 0
   tankTrack: {fileID: 2395971572885896235, guid: 7f6bfca1d695de44a95a84273ce6cdfd, type: 3}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 1595954078675488083}
   - component: {fileID: 1595954078675488082}
   m_Layer: 2
-  m_Name: EnemyStationaryGun
+  m_Name: EnemySpecialGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -239,7 +239,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a3f751f5fbbf9e741b25473c7a95888c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5f8ad61663f684440a869115f21a4137, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  bulletSpeed: 3
+  bulletSpeed: 4.5
   bulletSize: 1
-  fireDelay: 2.5
+  fireDelay: 2
   bullet: {fileID: 1448511631538249570, guid: e6b9a726903e0d547ac8f30911e110b5, type: 3}

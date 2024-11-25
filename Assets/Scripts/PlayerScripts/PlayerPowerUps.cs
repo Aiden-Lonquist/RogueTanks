@@ -23,13 +23,14 @@ public class PlayerPowerUps : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && touchingPowerup)
         {
-            string powerUpType = currentPowerUpTouching.GetComponent<PowerUp>().type;
+            EquipNewItem(currentPowerUpTouching);
+            /*string powerUpType = currentPowerUpTouching.GetComponent<PowerUp>().type;
             if (powerUpType == "tread")
             {
                 applyTreadPowerUp(currentPowerUpTouching.GetComponent<PowerUp>().speed, currentPowerUpTouching.GetComponent<PowerUp>().powerUpImage);
                 if (currentTread != null)
                 {
-                    Instantiate(currentTread, gameObject.transform.position, gameObject.transform.rotation);
+                    Instantiate(currentTread, gameObject.transform.position + new Vector3(0, 0, 2), gameObject.transform.rotation);
                 }
                 currentTread = powerUps[currentPowerUpTouching.GetComponent<PowerUp>().index];
             }
@@ -38,20 +39,126 @@ public class PlayerPowerUps : MonoBehaviour
                 applyBodyPowerUp(currentPowerUpTouching.GetComponent<PowerUp>().health, currentPowerUpTouching.GetComponent<PowerUp>().powerUpImage);
                 if (currentBody != null)
                 {
-                    Instantiate(currentBody, gameObject.transform.position, gameObject.transform.rotation);
+                    Instantiate(currentBody, gameObject.transform.position + new Vector3(0, 0, 2), gameObject.transform.rotation);
                 }
                 currentBody = powerUps[currentPowerUpTouching.GetComponent<PowerUp>().index];
             }
             else if (powerUpType == "gun")
             {
-                applyGunPowerUp(currentPowerUpTouching.GetComponent<PowerUp>().damage, currentPowerUpTouching.GetComponent<PowerUp>().fireRate, currentPowerUpTouching.GetComponent<PowerUp>().bulletSpeed, currentPowerUpTouching.GetComponent<PowerUp>().powerUpImage);
+                applyGunPowerUp(currentPowerUpTouching.GetComponent<PowerUp>().bulletSize, currentPowerUpTouching.GetComponent<PowerUp>().fireRate, currentPowerUpTouching.GetComponent<PowerUp>().bulletSpeed, currentPowerUpTouching.GetComponent<PowerUp>().powerUpImage);
                 if (currentGun != null)
                 {
-                    Instantiate(currentGun, gameObject.transform.position, gameObject.transform.rotation);
+                    Instantiate(currentGun, gameObject.transform.position + new Vector3(0,0,2), gameObject.transform.rotation);
                 }
                 currentGun = powerUps[currentPowerUpTouching.GetComponent<PowerUp>().index];
-            }
+            }*/
             Destroy(currentPowerUpTouching.gameObject);
+        }
+    }
+
+    private void EquipNewItem(GameObject powerUp)
+    {
+        float speed;
+        float health;
+        float bulletSize;
+        float fireRate;
+        float bulletSpeed;
+        float damage;
+        string modifier;
+
+        (speed, health, bulletSize, fireRate, bulletSpeed, damage, modifier) =  powerUp.GetComponent<PowerUp>().GetItemStats();
+
+        gameObject.GetComponent<PlayerMovement>().speed += speed;
+        gameObject.GetComponent<PlayerMovement>().health += health;
+        gun.GetComponent<PlayerAttack>().projectileSize += bulletSize;
+        gun.GetComponent<PlayerAttack>().fireRate += fireRate;
+        gun.GetComponent<PlayerAttack>().projectileSpeed += bulletSpeed;
+        gun.GetComponent<PlayerAttack>().damage += damage;
+        if (modifier == "stationaryShooting")
+        {
+            gun.GetComponent<PlayerAttack>().SetStationairyShooting(true);
+        }
+        if (modifier == "dash")
+        {
+            gameObject.GetComponent<PlayerMovement>().SetDashActive(true);
+        }
+
+        if (powerUp.GetComponent<PowerUp>().type == "tread")
+        {
+            // unequip current tread
+            if (currentTread != null)
+            {
+                Instantiate(currentTread, gameObject.transform.position + new Vector3(0, 0, 2), gameObject.transform.rotation);
+                UnequipItem(currentTread);
+            }
+            // set as current tread
+            for (int i=0; i<powerUps.Count; i++)
+            {
+                if (powerUps[i].GetComponent<PowerUp>().description == powerUp.GetComponent<PowerUp>().description)
+                {
+                    currentTread = powerUps[i];
+                }
+            }
+        } else if (powerUp.GetComponent<PowerUp>().type == "body")
+        {
+            // unequip current tread
+            if (currentBody != null)
+            {
+                Instantiate(currentBody, gameObject.transform.position + new Vector3(0, 0, 2), gameObject.transform.rotation);
+                UnequipItem(currentBody);
+            }
+            // set as current tread
+            for (int i = 0; i < powerUps.Count; i++)
+            {
+                if (powerUps[i].GetComponent<PowerUp>().description == powerUp.GetComponent<PowerUp>().description)
+                {
+                    currentBody = powerUps[i];
+                }
+            }
+        } else if (powerUp.GetComponent<PowerUp>().type == "gun")
+        {
+            // unequip current tread
+            if (currentGun != null)
+            {
+                Instantiate(currentGun, gameObject.transform.position + new Vector3(0, 0, 2), gameObject.transform.rotation);
+                UnequipItem(currentGun);
+            }
+            // set as current tread
+            for (int i = 0; i < powerUps.Count; i++)
+            {
+                if (powerUps[i].GetComponent<PowerUp>().description == powerUp.GetComponent<PowerUp>().description)
+                {
+                    currentGun = powerUps[i];
+                }
+            }
+        }
+    }
+
+    private void UnequipItem(GameObject item)
+    {
+        float speed;
+        float health;
+        float bulletSize;
+        float fireRate;
+        float bulletSpeed;
+        float damage;
+        string modifier;
+
+        (speed, health, bulletSize, fireRate, bulletSpeed, damage, modifier) = item.GetComponent<PowerUp>().GetItemStats();
+
+        gameObject.GetComponent<PlayerMovement>().speed -= speed;
+        gameObject.GetComponent<PlayerMovement>().health -= health;
+        gun.GetComponent<PlayerAttack>().projectileSize -= bulletSize;
+        gun.GetComponent<PlayerAttack>().fireRate -= fireRate;
+        gun.GetComponent<PlayerAttack>().projectileSpeed -= bulletSpeed;
+        gun.GetComponent<PlayerAttack>().damage -= damage;
+        if (modifier == "stationaryShooting")
+        {
+            gun.GetComponent<PlayerAttack>().SetStationairyShooting(false);
+        }
+        if (modifier == "dash")
+        {
+            gameObject.GetComponent<PlayerMovement>().SetDashActive(false);
         }
     }
 

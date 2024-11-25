@@ -14,6 +14,8 @@ public class RoomManagement : MonoBehaviour
     public List<GameObject> enemyTypes;
     public List<GameObject> obstacleTypes;
     private GameObject obstacleHolder, enemyHolder;
+
+    private bool difficultyScailing = true; // Manual toggle for difficulty scailing. false: random gameplay, true: scailing
     // Start is called before the first frame update
     void Start()
     {
@@ -61,8 +63,17 @@ public class RoomManagement : MonoBehaviour
             List<int> availableDoors = new List<int> {1, 2, 3, 4};
             List<int> doorsToPlace = new List<int>();
             int AmountDoorsToPlace = Random.Range(1, 4);
-            int obstacleCount = Random.Range(20, 50);
-            int enemyCount = Random.Range(10, 21);
+            int obstacleCount = Random.Range(8, 21);
+            int enemyCount;
+            if (difficultyScailing)
+            {
+                enemyCount = Mathf.FloorToInt(Mathf.Sqrt(rooms.Count * 2));
+                Debug.Log("Enemy Count is: " + enemyCount + " at room:" + rooms.Count);
+            } else
+            {
+                enemyCount = Random.Range(1, 5);
+            }
+
 
             Room newRoom = new()
             {
@@ -147,7 +158,13 @@ public class RoomManagement : MonoBehaviour
             {
                 Enemy enemy = new();
                 enemy.enemyCode = "Enemy" + newEnemy.ToString();
-                enemy.enemyType = enemyTypes[Random.Range(0, enemyTypes.Count)];
+                if (difficultyScailing)
+                {
+                    enemy.enemyType = enemyTypes[Random.Range(0, enemyCount) % enemyTypes.Count];
+                } else
+                {
+                    enemy.enemyType = enemyTypes[Random.Range(0, enemyTypes.Count)];
+                }
                 int availablePlacementIndex = Random.Range(0, availablePlacements.Count);
                 enemy.xPOS = availablePlacements[availablePlacementIndex].x;
                 enemy.yPOS = availablePlacements[availablePlacementIndex].y;

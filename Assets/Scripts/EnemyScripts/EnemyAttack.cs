@@ -43,7 +43,7 @@ public class EnemyAttack : MonoBehaviour
             } else
             {
                 // if fails to fire delay until next attack is shorter
-                yield return new WaitForSeconds(fireDelay/2f);
+                yield return new WaitForSeconds(fireDelay/3f);
             }
         }
     }

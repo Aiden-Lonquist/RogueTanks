@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject tankTrack;
     private GameObject tracks;
     private bool dashActive = false;
+    private bool shieldActive = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,9 +26,9 @@ public class PlayerMovement : MonoBehaviour
         MovementHandling();
         AdjustRotation();
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashActive)
         {
-            //Dash();
+            rb.velocity *= 5;
         }
     }
 
@@ -35,7 +36,10 @@ public class PlayerMovement : MonoBehaviour
     {
         float speedX = Input.GetAxisRaw("Horizontal");
         float speedY = Input.GetAxisRaw("Vertical");
-        rb.velocity = new Vector2(speedX, speedY) * speed;
+        Vector2 playerVelocity = new Vector2(speedX, speedY);
+        playerVelocity.Normalize();
+
+        rb.velocity = playerVelocity * speed;
     }
 
     private void AdjustRotation()
@@ -70,6 +74,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public bool GetIsMoving()
+    {
+        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
     public void TakeDamage(float dmg)
     {
         health -= dmg;
@@ -87,5 +100,10 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(0.3f / speed);
 
         }
+    }
+
+    public void SetDashActive(bool d)
+    {
+        dashActive = d;
     }
 }
